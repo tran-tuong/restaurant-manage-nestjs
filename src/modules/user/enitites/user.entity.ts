@@ -8,14 +8,14 @@ export class User {
   @Column()
   username: string;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
 
   @Column()
   password: string;
 
-  @Column()
-  role: string;
+  @Column({ default: 0 }) //0 is customer, 1 is admin
+  isAdmin: number;
 
   @CreateDateColumn()
   createAt: Date;
