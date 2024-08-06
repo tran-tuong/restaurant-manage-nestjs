@@ -17,6 +17,9 @@ export class User {
   @Column({ default: 0 }) //0 is customer, 1 is admin
   isAdmin: number;
 
+  @Column({ nullable: true })
+  refreshToken: string;
+
   @CreateDateColumn()
   createAt: Date;
 

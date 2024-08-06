@@ -20,4 +20,12 @@ export class UserService {
   async findByEmail(email: string): Promise<User> {
     return this.userRepository.findOne({ where: { email } });
   }
+
+  async saveRefreshToken(userId: number, refreshToken: string): Promise<void> {
+    await this.userRepository.update(userId, { refreshToken });
+  }
+
+  async removeRefreshToken(userId: number): Promise<void> {
+    await this.userRepository.update(userId, { refreshToken: null });
+  }
 }
