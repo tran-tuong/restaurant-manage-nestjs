@@ -14,8 +14,8 @@ export class User {
   @Column()
   password: string;
 
-  @Column({ default: 0 }) //0 is customer, 1 is admin
-  isAdmin: number;
+  @Column({ default: false })
+  isAdmin: boolean;
 
   @Column({ nullable: true })
   refreshToken: string;
