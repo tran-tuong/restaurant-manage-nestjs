@@ -1,7 +1,9 @@
+import { Order } from 'src/modules/order/entities/order.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -20,7 +22,7 @@ export class User {
   @Column()
   password: string;
 
-  @Column({ default: "user" })
+  @Column({ default: 'user' })
   roles: string;
 
   @Column({ nullable: true })
@@ -31,4 +33,7 @@ export class User {
 
   @UpdateDateColumn()
   updateAt: Date;
+
+  @OneToMany(() => Order, order => order.user, { cascade: true, eager: true })
+  orders: Order[];
 }

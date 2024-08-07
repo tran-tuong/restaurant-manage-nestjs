@@ -16,6 +16,7 @@ import { UpdateUserDto } from './dto/user-update.dto';
 import { Roles } from '../auth/roles/roles.decorator';
 import { Role } from '../auth/roles/roles.enum';
 import { RolesGuard } from '../auth/roles/roles.guard';
+import { Admin } from 'typeorm';
 
 @Controller('user')
 export class UserController {
@@ -47,12 +48,13 @@ export class UserController {
   }
 
   @Patch('/update/:id')
-  @UseGuards(JwtAuthGuard)
+  @Roles(Role.Admin, Role.User)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   updateUser(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto, @Req() req: ExpressRequest) {
     const userId = req.user.userId;
-    if (userId != id) {
-      throw new UnauthorizedException('You can only update your own account');
-    }
+    // if (userId != id ) {
+    //   throw new UnauthorizedException('You can only delete your own account');
+    // }
     return this.userService.updateUser(id, updateUserDto);
   }
 }

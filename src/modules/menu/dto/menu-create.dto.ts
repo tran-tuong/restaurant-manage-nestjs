@@ -21,7 +21,4 @@ export class CreateMenuDto {
   @IsNumber()
   quantity: number;
 
-
-  @IsBoolean()
-  available: boolean;
 }

@@ -1,9 +1,11 @@
+import { OrderItem } from 'src/modules/order/entities/order-items.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 
 @Entity('menus')
@@ -26,12 +28,12 @@ export class Menu {
   @Column('decimal')
   quantity: number;
 
-  @Column({ default: true })
-  available: boolean;
-
   @CreateDateColumn()
   createdAt: Date;
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @OneToMany(() => OrderItem, (OrderItem) => OrderItem.menu, { cascade: true, eager: true })
+  orderItems: OrderItem[];
 }

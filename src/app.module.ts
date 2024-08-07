@@ -7,6 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmAsyncConfig } from './config/typeorm.config';
 import { AuthModule } from './modules/auth/auth.module';
 import { MenuModule } from './modules/menu/menu.module';
+import { OrderModule } from './modules/order/order.module';
 
 @Module({
   imports: [
@@ -16,7 +17,9 @@ import { MenuModule } from './modules/menu/menu.module';
     TypeOrmModule.forRootAsync(typeOrmAsyncConfig),
     UserModule,
     AuthModule,
-    MenuModule],
+    MenuModule,
+    OrderModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
