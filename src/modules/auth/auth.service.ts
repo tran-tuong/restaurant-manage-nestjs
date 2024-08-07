@@ -1,8 +1,12 @@
 import { User } from './../user/enitites/user.entity';
 import { JwtService } from '@nestjs/jwt';
-import { RegisterDto } from '../user/dto/user-register.dto';;
+import { RegisterDto } from '../user/dto/user-register.dto';
 import { UserService } from './../user/user.service';
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
 import * as bcrypt from 'bcrypt';
 
@@ -31,8 +35,10 @@ export class AuthService {
     });
     return user;
   }
-  
-  async login(loginDto: LoginDto): Promise<{ accessToken: string; refreshToken: string }> {
+
+  async login(
+    loginDto: LoginDto,
+  ): Promise<{ accessToken: string; refreshToken: string; user: User; }> {
     const { email, password } = loginDto;
     const user = await this.userService.findByEmail(email);
 
@@ -46,7 +52,7 @@ export class AuthService {
 
     await this.userService.saveRefreshToken(user.id, refreshToken);
 
-    return { accessToken, refreshToken};
+    return { accessToken, refreshToken, user };
   }
   async logout(userId: number): Promise<void> {
     await this.userService.removeRefreshToken(userId);

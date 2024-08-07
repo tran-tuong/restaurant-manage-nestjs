@@ -19,14 +19,19 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles/roles.guard';
 import { Order } from './entities/order.entity';
 import { UpdateOrderStatusDto } from './dto/order-update-status.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Orders')
+@ApiBearerAuth()
 @Controller('order')
 export class OrderController {
   constructor(private orderService: OrderService) {}
 
   @Post('/create')
+  @ApiOperation({ summary: 'User and Admin' })
+  @ApiBody({ type: CreateOrderDto })
+  @ApiResponse({ status: 201, description: 'Order created successfully' })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
   @Roles(Role.Admin, Role.User)
   @UseGuards(JwtAuthGuard, RolesGuard)
   async createOrder(
@@ -37,13 +42,20 @@ export class OrderController {
   }
 
   @Get('/get')
-  @Roles(Role.Admin, Role.User)
+  @ApiOperation({ summary: 'Admin only' })
+  @ApiResponse({ status: 200, description: 'Return all orders' })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
+  @Roles(Role.Admin)
   @UseGuards(JwtAuthGuard, RolesGuard)
   async getAllOrders(): Promise<Order[]> {
     return this.orderService.getAllOrders();
   }
 
   @Get('/get/:id')
+  @ApiOperation({ summary: 'Admin and user' })
+  @ApiParam({ name: 'id', required: true, description: 'Order ID' })
+  @ApiResponse({ status: 200, description: 'Return the order with the specified ID' })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
   @Roles(Role.Admin, Role.User)
   @UseGuards(JwtAuthGuard, RolesGuard)
   async getOrderById(@Param('id') id: number): Promise<Order> {
@@ -51,6 +63,11 @@ export class OrderController {
   }
 
   @Patch('/update/:id')
+  @ApiOperation({ summary: 'Admin and user' })
+  @ApiParam({ name: 'id', required: true, description: 'Order ID' })
+  @ApiBody({ type: UpdateOrderStatusDto })
+  @ApiResponse({ status: 200, description: 'Order updated successfully' })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
   @Roles(Role.Admin, Role.User)
   @UseGuards(JwtAuthGuard, RolesGuard)
   async updateOrder(
@@ -61,6 +78,10 @@ export class OrderController {
   }
 
   @Delete('/delete/:id')
+  @ApiOperation({ summary: 'Admin and user' })
+  @ApiParam({ name: 'id', required: true, description: 'Order ID' })
+  @ApiResponse({ status: 200, description: 'Order deleted successfully' })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
   @Roles(Role.Admin, Role.User)
   @UseGuards(JwtAuthGuard, RolesGuard)
   async deleteOrder(@Param('id') id: number): Promise<void> {

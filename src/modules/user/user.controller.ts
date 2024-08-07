@@ -16,14 +16,25 @@ import { UpdateUserDto } from './dto/user-update.dto';
 import { Roles } from '../auth/roles/roles.decorator';
 import { Role } from '../auth/roles/roles.enum';
 import { RolesGuard } from '../auth/roles/roles.guard';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 @ApiTags('User')
+@ApiBearerAuth()
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}
 
-  @Get('get')
+  @Get('/get')
+  @ApiOperation({ summary: 'Admin only, Get all user' })
+  @ApiResponse({ status: 200, description: 'Return all users.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Roles(Role.Admin)
   @UseGuards(JwtAuthGuard, RolesGuard)
   getAllUsers() {
@@ -31,14 +42,21 @@ export class UserController {
   }
 
   @Get('/get/:id')
-  @Roles(Role.Admin)
+  @ApiParam({ name: 'id', required: true, description: 'User ID' })
+  @ApiResponse({ status: 200, description: 'Find user by Id' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 404, description: 'Not Found' })
+  @Roles(Role.Admin, Role.User)
   @UseGuards(JwtAuthGuard, RolesGuard)
   getUserById(@Param('id') id: number) {
     return this.userService.getUserById(id);
   }
 
   @Delete('/delete/:id')
-  @UseGuards(JwtAuthGuard)
+  @ApiParam({ name: 'id', required: true, description: 'User ID' })
+  @ApiResponse({ status: 200, description: 'User successfully deleted.' })
+  @Roles(Role.Admin, Role.User)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   deleteUser(@Param('id') id: number, @Req() req: ExpressRequest) {
     const userId = req.user.userId;
     if (userId != id) {
@@ -49,9 +67,20 @@ export class UserController {
   }
 
   @Patch('/update/:id')
+  @ApiOperation({ summary: 'Can update 1 field' })
+  @ApiParam({ name: 'id', required: true, description: 'User ID' })
+  @ApiBody({
+    type: UpdateUserDto,
+    description: 'Update role to admin roles: admin',
+  })
+  @ApiResponse({ status: 200, description: 'User successfully updated.' })
   @Roles(Role.Admin, Role.User)
   @UseGuards(JwtAuthGuard, RolesGuard)
-  updateUser(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto, @Req() req: ExpressRequest) {
+  updateUser(
+    @Param('id') id: number,
+    @Body() updateUserDto: UpdateUserDto,
+    @Req() req: ExpressRequest,
+  ) {
     const userId = req.user.userId;
     // if (userId != id ) {
     //   throw new UnauthorizedException('You can only delete your own account');
