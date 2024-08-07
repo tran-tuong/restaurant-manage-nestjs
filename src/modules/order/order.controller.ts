@@ -19,8 +19,9 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles/roles.guard';
 import { Order } from './entities/order.entity';
 import { UpdateOrderStatusDto } from './dto/order-update-status.dto';
+import { ApiTags } from '@nestjs/swagger';
 
-
+@ApiTags('Orders')
 @Controller('order')
 export class OrderController {
   constructor(private orderService: OrderService) {}
@@ -28,7 +29,10 @@ export class OrderController {
   @Post('/create')
   @Roles(Role.Admin, Role.User)
   @UseGuards(JwtAuthGuard, RolesGuard)
-  async createOrder(@Body() createOrderDto: CreateOrderDto, @GetUser() user: User) {
+  async createOrder(
+    @Body() createOrderDto: CreateOrderDto,
+    @GetUser() user: User,
+  ) {
     return this.orderService.createOrder(createOrderDto, user);
   }
 
@@ -51,7 +55,7 @@ export class OrderController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   async updateOrder(
     @Param('id') id: number,
-    @Body() UpdateOrderStatusDto: Partial<UpdateOrderStatusDto>
+    @Body() UpdateOrderStatusDto: Partial<UpdateOrderStatusDto>,
   ): Promise<Order> {
     return this.orderService.updateOrder(id, UpdateOrderStatusDto);
   }

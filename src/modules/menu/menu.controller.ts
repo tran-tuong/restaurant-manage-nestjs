@@ -15,7 +15,9 @@ import { Roles } from '../auth/roles/roles.decorator';
 import { Role } from '../auth/roles/roles.enum';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles/roles.guard';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Menu')
 @Controller('menu')
 export class MenuController {
   constructor(private menuService: MenuService) {}

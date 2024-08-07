@@ -4,7 +4,9 @@ import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { ExpressRequest } from 'src/types/express-request.interface';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Authetication')
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}

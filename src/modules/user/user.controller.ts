@@ -16,8 +16,9 @@ import { UpdateUserDto } from './dto/user-update.dto';
 import { Roles } from '../auth/roles/roles.decorator';
 import { Role } from '../auth/roles/roles.enum';
 import { RolesGuard } from '../auth/roles/roles.guard';
-import { Admin } from 'typeorm';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('User')
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}
